@@ -10,12 +10,13 @@ Shortcut does its best to find your app, searching for the typical subjects in t
 Status
 ------
 
-WORK IN PROGRESS - windows support only, massively experimental, doesnt work.
+WORK IN PROGRESS - windows and linux support, massively experimental, probably doesnt work.
 
 Usage
 -----
 
-```bash
+The `shortcut` command line application will create desktop and menu shortcuts::
+
 usage: shortcut [-h] [--nodesktop] [--nomenu] target
 
 Auto shortcut creator
@@ -27,10 +28,9 @@ optional arguments:
   -h, --help   show this help message and exit
   --nodesktop  Dont create a desktop shortcut
   --nomenu     Dont create a menu shortcut
-```
 
-To create a shortcut for an application called `my_app`:
 
-```bash
+To create a shortcut for an application called `my_app`::
+
 shortcut my_app
-```
+

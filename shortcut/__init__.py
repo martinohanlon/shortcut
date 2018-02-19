@@ -8,7 +8,7 @@ if sys.platform.startswith("linux"):
 if platform == "win32":
     from .windows import create_shortcut
 elif platform == "linux":
-    raise Exception("Error: linux not support (coming soon)")
+    from .linux import create_shortcut
 elif platform == "darwin":
     raise Exception("Error: macos not support (coming soon)")
 else:
