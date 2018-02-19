@@ -20,7 +20,7 @@ __url__ = 'https://github.com/martinohanlon/shortcut'
 __requires__ = []
 __extra_requires__ = {
     ':sys_platform == "win32"': [
-        'pywin32',
+        #'pywin32',
         'pypiwin32',
         'winshell',
         ],
