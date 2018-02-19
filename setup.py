@@ -63,7 +63,7 @@ if __name__ == '__main__':
           #install_requires = __requires__,
           extras_require = __extra_requires__,
           entry_points={
-          'console_scripts': [
-              'shortcut = shortcut:main'
-              ]},
+              'console_scripts': [
+                  'shortcut = shortcut:main'
+                  ]},
           zip_safe=False)

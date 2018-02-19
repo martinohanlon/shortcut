@@ -15,22 +15,20 @@ WORK IN PROGRESS - windows and linux support, massively experimental, probably d
 Usage
 -----
 
-The `shortcut` command line application will create desktop and menu shortcuts::
+The `shortcut` command line application will create desktop and menu shortcuts ::
 
-usage: shortcut [-h] [--nodesktop] [--nomenu] target
+    usage: shortcut [-h] [--nodesktop] [--nomenu] target
 
-Auto shortcut creator
+    Auto shortcut creator
 
-positional arguments:
-  target       The target app or file to create a shortcut for
+    positional arguments:
+      target       The target app or file to create a shortcut for
 
-optional arguments:
-  -h, --help   show this help message and exit
-  --nodesktop  Dont create a desktop shortcut
-  --nomenu     Dont create a menu shortcut
+    optional arguments:
+      -h, --help   show this help message and exit
+      --nodesktop  Dont create a desktop shortcut
+      --nomenu     Dont create a menu shortcut
 
+To create a shortcut for an application called `my_app` ::
 
-To create a shortcut for an application called `my_app`::
-
-shortcut my_app
-
+    shortcut my_app

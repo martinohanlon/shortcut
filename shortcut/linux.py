@@ -103,5 +103,3 @@ def get_paths():
     paths = os.environ['PATH'].split(os.pathsep)
     
     return paths
-
-#create_shortcut("mu")

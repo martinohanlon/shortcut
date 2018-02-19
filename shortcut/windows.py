@@ -35,7 +35,6 @@ def create_shortcut(target, desktop = True, menu = True):
     
     # find for the target path
     target_path = find_target(target)
-    print(target_path)
 
     # create the shortcuts
     if target_path:
@@ -182,7 +181,3 @@ def get_python_scripts_path():
                 searched = True
 
     return scripts_path
-
-#print(get_python_scripts_path())
-#print(find_app("notepad"))
-#shortcut("mu")
