@@ -3,9 +3,9 @@ Shortcut
 
 Shortcut is a work in progress solution to help with creating desktop and menu shortcuts for files and applications.
 
-It was created by me to solve a simple problem - if you install python packages which have 'executables' using pip there are no way of creating shortcuts.
+It was created by me to solve a simple problem - if you install python packages using pip there is no way of creating a shortcut to the program.
 
-Shortcut does its best to find your app, searching for the typical subjects in the usual places.
+Shortcut does its best to find your app, searching for the usual subjects in the usual places (i.e. those in the PATH).
 
 Status
 ------

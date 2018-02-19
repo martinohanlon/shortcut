@@ -22,18 +22,16 @@ import sys
 import os
 
 def create_shortcut(target, desktop = True, menu = True):
-    print(desktop)
-    print(menu)
     """
     Creates desktop and menu shortcuts to a target.
 
     The target can be a fully qualified file path `c:\\Windows\\Notepad.exe`  
     or a simple application name `notepad`.
     """
-    # get the target name by removing the extension
-    target_name = os.path.splitext(target)[0]
+    # get the target name by getting the file name and removing the extension
+    target_name = os.path.splitext(os.path.basename(target))[0]
     
-    # find for the target path
+    # find for the target path  
     target_path = find_target(target)
 
     # create the shortcuts
