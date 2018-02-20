@@ -20,6 +20,7 @@ except ImportError as e:
 import winshell
 import sys
 import os
+from .exception import *
 
 def create_shortcut(target, desktop = True, menu = True):
     """
@@ -37,7 +38,7 @@ def create_shortcut(target, desktop = True, menu = True):
     # create the shortcuts
     if target_path:
 
-        start_folder = winshell.folder("CSIDL_PROGRAMS")
+        menu_folder = winshell.folder("CSIDL_PROGRAMS")
         desktop_folder = winshell.folder("CSIDL_DESKTOPDIRECTORY")
 
         if desktop:
@@ -49,23 +50,73 @@ def create_shortcut(target, desktop = True, menu = True):
 
         if menu:
             winshell.CreateShortcut(
-                Path = os.path.join(start_folder, target_name + ".lnk"),
+                Path = os.path.join(menu_folder, target_name + ".lnk"),
                 Target = target_path,
                 Icon = (target_path, 0),
                 Description = "Shortcut to" + target_name)
     else:
-        print("Failed: unable to find '{}'".format(target))
+        raise ShortcutError("Unable to find '{}'".format(target))
+
+def create_desktop_shortcut(target):
+    """
+    Creates a desktop shortcuts to a target.
+
+    The target can be a fully qualified file path `c:\\Windows\\Notepad.exe`  
+    or a simple application name `notepad`.
+    """
+    # get the target name by getting the file name and removing the extension
+    target_name = os.path.splitext(os.path.basename(target))[0]
+
+    # find for the target path  
+    target_path = find_target(target)
+
+    menu_folder = winshell.folder("CSIDL_PROGRAMS")
+
+    winshell.CreateShortcut(
+        Path = os.path.join(menu_folder, target_name + ".lnk"),
+        Target = target_path,
+        Icon = (target_path, 0),
+        Description = "Shortcut to" + target_name)
+
+def create_menu_shortcut(target):
+    """
+    Creates a desktop shortcuts to a target.
+
+    The target can be a fully qualified file path `c:\\Windows\\Notepad.exe`  
+    or a simple application name `notepad`.
+    """
+    # get the target name by getting the file name and removing the extension
+    target_name = os.path.splitext(os.path.basename(target))[0]
+
+    # find for the target path  
+    target_path = find_target(target)
+
+    desktop_folder = winshell.folder("CSIDL_DESKTOPDIRECTORY")
+
+    winshell.CreateShortcut(
+        Path = os.path.join(desktop_folder, target_name + ".lnk"),
+        Target = target_path,
+        Icon = (target_path, 0),
+        Description = "Shortcut to" + target_name)
 
 def find_target(target):
     """
-    Finds the target file path.
+    Finds a file path for a target.
 
-    Returns `None` if the file cannot be found.
+    The target can be a fully qualified file path `c:\\Windows\\Notepad.exe`  
+    or a simple application name `notepad`.
+
+    Raises `ShortcutTargetNotFound` if a file cannot be found.
     """
     if os.path.isfile(target):
         return os.path.abspath(target)
     else:
-        return search_for_target(target)
+        targets = search_for_target(target)
+        if len(targets) > 0:
+            return targets[0]
+        else:
+            raise ShortcutTargetError("Unable to find '{}'".format(target))
+            
 
 def search_for_target(target):
     """
@@ -76,6 +127,8 @@ def search_for_target(target):
 
     Directories searched are those in the PATH and it will also attempt
     to search the Python Scripts directory, if that isn't in the PATH.
+
+    Returns a list of potential target paths
     """
     # potential list of app paths
     target_paths = []
@@ -102,11 +155,8 @@ def search_for_target(target):
                 # its not a directory, is it the app we are looking for?
                 pass
 
-    if len(target_paths) > 0:
-        return target_paths[0]
-    else:
-        return None
-
+    return target_paths
+    
 def get_potential_target_names(target):
     """
     Gets a list of potential file names which might be the target, by adding
@@ -135,7 +185,6 @@ def get_paths():
     """
     # get folders from PATH
     paths = os.environ['PATH'].split(os.pathsep)
-    #print(paths)
     
     # add the python scripts path if needed
     python_scripts_path = get_python_scripts_path()
@@ -149,7 +198,6 @@ def get_paths():
         if not found:
             paths.append(python_scripts_path)
         
-    #print(paths)
     return paths
 
 def get_python_scripts_path():
