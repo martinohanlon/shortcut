@@ -5,12 +5,29 @@ Shortcut is a work in progress solution to help with creating desktop and menu s
 
 It was created by me to solve a simple problem - if you install python packages using pip there is no way of creating a shortcut to the program.
 
-Shortcut does its best to find your app, searching for the usual subjects in the usual places (i.e. those in the PATH).
+Shortcut does its best to find your app, searching for the usual suspects in the usual places (i.e. those in the PATH).
 
 Status
 ------
 
 WORK IN PROGRESS - windows and linux support, massively experimental, probably doesnt work.
+
+Install
+-------
+
+(for the moment) Clone the repo and run the setup 
+
+Linux ::
+
+    git clone https://github.com/martinohanlon/shortcut
+    cd shortcut
+    sudo python3 setup.py install
+
+Windows ::
+
+    git clone https://github.com/martinohanlon/shortcut
+    cd shortcut
+    python setup.py install
 
 Usage
 -----
