@@ -22,7 +22,7 @@ import sys
 import os
 from .exception import *
 
-def create_shortcut(target, desktop = True, menu = True):
+def create_shortcuts(target, desktop = True, menu = True):
     """
     Creates desktop and menu shortcuts to a target.
 
@@ -35,52 +35,15 @@ def create_shortcut(target, desktop = True, menu = True):
     # find for the target path  
     target_path = find_target(target)
 
-    # create the shortcuts
-    if target_path:
+    if desktop:
+        create_desktop_shortcut(target_path)
 
-        menu_folder = winshell.folder("CSIDL_PROGRAMS")
-        desktop_folder = winshell.folder("CSIDL_DESKTOPDIRECTORY")
-
-        if desktop:
-            winshell.CreateShortcut(
-                Path = os.path.join(desktop_folder, target_name + ".lnk"),
-                Target = target_path,
-                Icon = (target_path, 0),
-                Description = "Shortcut to" + target_name)
-
-        if menu:
-            winshell.CreateShortcut(
-                Path = os.path.join(menu_folder, target_name + ".lnk"),
-                Target = target_path,
-                Icon = (target_path, 0),
-                Description = "Shortcut to" + target_name)
-    else:
-        raise ShortcutError("Unable to find '{}'".format(target))
+    if menu:
+        create_menu_shortcut(target_path)
 
 def create_desktop_shortcut(target):
     """
-    Creates a desktop shortcuts to a target.
-
-    The target can be a fully qualified file path `c:\\Windows\\Notepad.exe`  
-    or a simple application name `notepad`.
-    """
-    # get the target name by getting the file name and removing the extension
-    target_name = os.path.splitext(os.path.basename(target))[0]
-
-    # find for the target path  
-    target_path = find_target(target)
-
-    menu_folder = winshell.folder("CSIDL_PROGRAMS")
-
-    winshell.CreateShortcut(
-        Path = os.path.join(menu_folder, target_name + ".lnk"),
-        Target = target_path,
-        Icon = (target_path, 0),
-        Description = "Shortcut to" + target_name)
-
-def create_menu_shortcut(target):
-    """
-    Creates a desktop shortcuts to a target.
+    Creates a desktop shortcut to a target.
 
     The target can be a fully qualified file path `c:\\Windows\\Notepad.exe`  
     or a simple application name `notepad`.
@@ -92,12 +55,41 @@ def create_menu_shortcut(target):
     target_path = find_target(target)
 
     desktop_folder = winshell.folder("CSIDL_DESKTOPDIRECTORY")
+    if not os.path.isdir(desktop_folder):
+        raise ShortcutNoDesktopError("Desktop folder '{}' not found".format(desktop_folder))
+
+    return create_shortcut_file(target_name, target_path, desktop_folder)
+
+def create_menu_shortcut(target):
+    """
+    Creates a menu shortcut to a target.
+
+    The target can be a fully qualified file path `c:\\Windows\\Notepad.exe`  
+    or a simple application name `notepad`.
+    """
+    # get the target name by getting the file name and removing the extension
+    target_name = os.path.splitext(os.path.basename(target))[0]
+
+    # find for the target path  
+    target_path = find_target(target)
+
+    menu_folder = winshell.folder("CSIDL_PROGRAMS")
+    if not os.path.isdir(menu_folder):
+        raise ShortcutNoMenuError("Menu folder '{}' not found".format(menu_folder))
+
+    return create_shortcut_file(target_name, target_path, menu_folder)
+    
+def create_shortcut_file(target_name, target_path, shortcut_folder):
+
+    shortcut_file_path = os.path.join(shortcut_folder, target_name + ".lnk")
 
     winshell.CreateShortcut(
-        Path = os.path.join(desktop_folder, target_name + ".lnk"),
+        Path = os.path.join(shortcut_file_path),
         Target = target_path,
         Icon = (target_path, 0),
         Description = "Shortcut to" + target_name)
+
+    return (target_name, target_path, shortcut_file_path)
 
 def find_target(target):
     """
@@ -117,7 +109,6 @@ def find_target(target):
         else:
             raise ShortcutTargetError("Unable to find '{}'".format(target))
             
-
 def search_for_target(target):
     """
     Searches for a target file.

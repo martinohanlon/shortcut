@@ -4,3 +4,8 @@ class ShortcutError(Exception):
 class ShortcutTargetError(ShortcutError):
     pass
 
+class ShortcutNoDesktopError(ShortcutError):
+    pass
+
+class ShortcutNoMenuError(ShortcutError):
+    pass

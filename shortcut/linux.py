@@ -1,8 +1,9 @@
 import sys
 import os
 import stat
+from .exception import *
 
-def create_shortcut(target, desktop = True, menu = True):
+def create_shortcuts(target, desktop = True, menu = True):
     """
     Creates desktop and menu shortcuts to a target.
 
@@ -15,29 +16,52 @@ def create_shortcut(target, desktop = True, menu = True):
     # find for the target path
     target_path = find_target(target)
 
-    # create the shortcuts
-    if target_path:
+    if desktop:
+        create_desktop_shortcut(target_path)
 
-        menu_folder = os.path.join(os.path.join(os.path.expanduser('~')), '.local', 'share', 'applications')
-        if not os.path.isdir(menu_folder):
-            print("Couldn't find the menu folder '{}'".format(menu_folder))
-            menu = False
-        
-        desktop_folder = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')
-        if not os.path.isdir(desktop_folder):
-            print("Couldn't find the desktop folder '{}'".format(desktop_folder))
-            desktop = False
-        
-        if desktop:
-            write_shortcut_file(desktop_folder, target_name, target_path)
+    if menu:
+        create_desktop_shortcut(target_path)
 
-        if menu:
-            write_shortcut_file(menu_folder, target_name, target_path)
+def create_desktop_shortcut(target):
+    """
+    Creates a desktop shortcut to a target.
 
-    else:
-        print("Failed: unable to find '{}'".format(target))
+    The target can be a fully qualified file path `/usr/bin/gedit`  
+    or a simple application name `gedit`.
+    """
 
-def write_shortcut_file(shortcut_folder, target_name, target_path):
+    # get the target name by getting the file name and removing the extension
+    target_name = os.path.splitext(os.path.basename(target))[0]
+
+    # find for the target path  
+    target_path = find_target(target)
+
+    desktop_folder = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')
+    if not os.path.isdir(desktop_folder):
+        raise ShortcutNoDesktopError("Desktop folder '{}' not found".format(desktop_folder))
+
+    return create_shortcut_file(target_name, target_path, desktop_folder)
+
+def create_menu_shortcut(target):
+    """
+    Creates a menu shortcut to a target.
+
+    The target can be a fully qualified file path `/usr/bin/gedit`  
+    or a simple application name `gedit`.
+    """
+    # get the target name by getting the file name and removing the extension
+    target_name = os.path.splitext(os.path.basename(target))[0]
+
+    # find for the target path  
+    target_path = find_target(target)
+
+    menu_folder = os.path.join(os.path.join(os.path.expanduser('~')), '.local', 'share', 'applications')
+    if not os.path.isdir(menu_folder):
+        raise ShortcutNoMenuError("Menu folder '{}' not found".format(menu_folder))
+
+    return create_shortcut_file(target_name, target_path, menu_folder) 
+
+def create_shortcut_file(target_name, target_path, shortcut_folder):
     shortcut_file_path = os.path.join(shortcut_folder, "launch_" + target_name + ".desktop")
     with open(shortcut_file_path, "w") as shortcut:
         shortcut.write("[Desktop Entry]\n")
@@ -50,6 +74,8 @@ def write_shortcut_file(shortcut_folder, target_name, target_path):
         st = os.stat(shortcut_file_path)
         os.chmod(shortcut_file_path, st.st_mode | stat.S_IEXEC)
 
+    return (target_name, target_path, shortcut_file_path)
+
 def find_target(target):
     """
     Finds the target file path.
@@ -59,7 +85,11 @@ def find_target(target):
     if os.path.isfile(target):
         return os.path.abspath(target)
     else:
-        return search_for_target(target)
+        targets = search_for_target(target)
+        if len(targets) > 0:
+            return targets[0]
+        else:
+            raise ShortcutTargetError("Unable to find '{}'".format(target))
 
 def search_for_target(target):
     """
@@ -90,10 +120,7 @@ def search_for_target(target):
                 # its not a directory, is it the app we are looking for?
                 pass
 
-    if len(target_paths) > 0:
-        return target_paths[0]
-    else:
-        return None
+    return target_paths
 
 def get_paths():
     """
