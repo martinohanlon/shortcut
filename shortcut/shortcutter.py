@@ -31,7 +31,7 @@ class ShortCutter(object):
         # find for the target path  
         target_path = self.find_target(target)
 
-        if os.path.isdir(self._desktop_folder):
+        if not os.path.isdir(self._desktop_folder):
             raise ShortcutNoDesktopError("Desktop folder '{}' not found".format(self._desktop_folder))
 
         return self.create_shortcut_file(target_name, target_path, self._desktop_folder)
