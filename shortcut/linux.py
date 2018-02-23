@@ -13,6 +13,11 @@ class ShortCutterLinux(ShortCutter):
         return os.path.join(os.path.join(os.path.expanduser('~')), '.local', 'share', 'applications')
 
     def create_shortcut_file(self, target_name, target_path, shortcut_folder):
+        """
+        Creates a Linux shortcut file.
+
+        Returns a tuple of (target_name, target_path, shortcut_file_path)
+        """
         shortcut_file_path = os.path.join(shortcut_folder, "launch_" + target_name + ".desktop")
         with open(shortcut_file_path, "w") as shortcut:
             shortcut.write("[Desktop Entry]\n")

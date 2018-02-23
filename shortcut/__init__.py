@@ -26,7 +26,6 @@ def main():
     parser.add_argument("--nomenu", help="Dont create a menu shortcut", action="store_true")
     args = parser.parse_args()
     
-    print("new shortcutter")
     shortcutter = ShortCutter()
 
     try:
@@ -34,7 +33,7 @@ def main():
 
         desktop_created = False
         try:
-            print(shortcutter.create_desktop_shortcut(target_path))
+            shortcutter.create_desktop_shortcut(target_path)
             desktop_created = True
         except ShortcutNoDesktopError as e:
             print("Failed to create desktop shortcut")
@@ -42,7 +41,7 @@ def main():
         
         menu_created = False
         try:
-            print(shortcutter.create_menu_shortcut(target_path))
+            shortcutter.create_menu_shortcut(target_path)
             menu_created = True
         except ShortcutNoMenuError as e:
             print("Failed to create menu shortcut")

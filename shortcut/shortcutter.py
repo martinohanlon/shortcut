@@ -42,6 +42,8 @@ class ShortCutter(object):
 
         The target can be a fully qualified file path `/usr/bin/gedit`  
         or a simple application name `gedit`.
+
+        Returns a tuple of (target_name, target_path, shortcut_file_path)
         """
         # get the target name by getting the file name and removing the extension
         target_name = os.path.splitext(os.path.basename(target))[0]
@@ -60,9 +62,9 @@ class ShortCutter(object):
         
     def find_target(self, target):
         """
-        Finds the target file path.
+        Returns a target file path.
 
-        Returns `None` if the file cannot be found.
+        Raises ShortcutTargetError if the target cannot be found.
         """
         if os.path.isfile(target):
             return os.path.abspath(target)
@@ -77,7 +79,7 @@ class ShortCutter(object):
         """
         Searches for a target file.
 
-        Directories searched are those in the PATH.
+        Returns a list of potential file paths.
         """
         # potential list of app paths
         target_paths = []
@@ -108,7 +110,9 @@ class ShortCutter(object):
 
     def get_paths(self):
         """
-        Gets the paths which might contain the target.
+        Gets paths from the PATH environment variables.
+
+        Returns a list of paths.
         """
         # get folders from PATH
         paths = os.environ['PATH'].split(os.pathsep)
