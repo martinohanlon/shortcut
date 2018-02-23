@@ -6,9 +6,9 @@ if sys.platform.startswith("linux"):
 
 # operating system specific imports
 if platform == "win32":
-    from .windows import create_shortcuts, create_desktop_shortcut, create_menu_shortcut, find_target
+    from .windows import ShortCutterWindows as ShortCutter
 elif platform == "linux":
-    from .linux import  create_shortcuts, create_desktop_shortcut, create_menu_shortcut, find_target
+    from .linux import  ShortCutterLinux as ShortCutter
 elif platform == "darwin":
     raise Exception("Error: macos not support (coming soon)")
 else:
@@ -26,12 +26,15 @@ def main():
     parser.add_argument("--nomenu", help="Dont create a menu shortcut", action="store_true")
     args = parser.parse_args()
     
+    print("new shortcutter")
+    shortcutter = ShortCutter()
+
     try:
-        target_path = find_target(args.target)
+        target_path = shortcutter.find_target(args.target)
 
         desktop_created = False
         try:
-            print(create_desktop_shortcut(target_path))
+            print(shortcutter.create_desktop_shortcut(target_path))
             desktop_created = True
         except ShortcutNoDesktopError as e:
             print("Failed to create desktop shortcut")
@@ -39,7 +42,7 @@ def main():
         
         menu_created = False
         try:
-            print(create_menu_shortcut(target_path))
+            print(shortcutter.create_menu_shortcut(target_path))
             menu_created = True
         except ShortcutNoMenuError as e:
             print("Failed to create menu shortcut")
