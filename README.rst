@@ -29,23 +29,31 @@ Windows ::
     cd shortcut
     python setup.py install
 
+
+MacOS ::
+
+    git clone https://github.com/martinohanlon/shortcut
+    cd shortcut
+    python3 setup.py install
+
 Usage
 -----
 
 The `shortcut` command line application will create desktop and menu shortcuts ::
 
-    usage: shortcut [-h] [--nodesktop] [--nomenu] target
+    usage: shortcut [-h] [--desktop] [--menu] target
 
     Auto shortcut creator
 
     positional arguments:
-      target       The target app or file to create a shortcut for
+    target      The target executable to create Desktop and Menu shortcuts
 
     optional arguments:
-      -h, --help   show this help message and exit
-      --nodesktop  Dont create a desktop shortcut
-      --nomenu     Dont create a menu shortcut
+    -h, --help  show this help message and exit
+    --desktop   Only create a desktop shortcut
+    --menu      Only create a menu shortcut
 
 To create a shortcut for an application called `my_app` ::
 
     shortcut my_app
+

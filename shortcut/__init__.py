@@ -39,27 +39,32 @@ def main():
     try:
         target_path = shortcutter.find_target(args.target)
 
-        desktop_created = False
-        if create_desktop:
-            try:
-                shortcutter.create_desktop_shortcut(target_path)
-                desktop_created = True
-            except ShortcutNoDesktopError as e:
-                print("Failed to create desktop shortcut")
-                print(e)
+        if target_path:
 
-        menu_created = False
-        if create_menu:    
-            try:
-                shortcutter.create_menu_shortcut(target_path)
-                menu_created = True
-            except ShortcutNoMenuError as e:
-                print("Failed to create menu shortcut")
-                print(e)
-            
-        if desktop_created or menu_created:
-            print("Shortcut created for '{}'".format(args.target))
+            desktop_created = False
+            if create_desktop:
+                try:
+                    shortcutter.create_desktop_shortcut(target_path)
+                    desktop_created = True
+                except ShortcutNoDesktopError as e:
+                    print("Failed to create desktop shortcut")
+                    print(e)
+
+            menu_created = False
+            if create_menu:    
+                try:
+                    shortcutter.create_menu_shortcut(target_path)
+                    menu_created = True
+                except ShortcutNoMenuError as e:
+                    print("Failed to create menu shortcut")
+                    print(e)
+                
+            if desktop_created or menu_created:
+                print("Shortcut created for '{}'".format(args.target))
+
+        else:
+            print("Shortcut failed: unable to find '{}'".format(args.target))
 
     except ShortcutError as e:
-        print("Shortcut failed: {}".format(e))
+        print("Shortcut failed: '{}'".format(e))
 

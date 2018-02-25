@@ -35,13 +35,13 @@ class ShortCutterWindows(ShortCutter):
     def _get_menu_folder(self):
         return winshell.folder("CSIDL_PROGRAMS")
 
-    def create_shortcut_file(self, target_name, target_path, shortcut_folder):
+    def _create_shortcut_file(self, target_name, target_path, shortcut_directory):
         """
         Creates a Windows shortcut file.
 
         Returns a tuple of (target_name, target_path, shortcut_file_path)
         """
-        shortcut_file_path = os.path.join(shortcut_folder, target_name + ".lnk")
+        shortcut_file_path = os.path.join(shortcut_directory, target_name + ".lnk")
 
         winshell.CreateShortcut(
             Path = os.path.join(shortcut_file_path),
@@ -49,7 +49,7 @@ class ShortCutterWindows(ShortCutter):
             Icon = (target_path, 0),
             Description = "Shortcut to" + target_name)
 
-        return (target_name, target_path, shortcut_file_path)
+        return shortcut_file_path
            
     def _is_file_the_target(self, target, file_name, file_path):
         match = False
@@ -66,14 +66,14 @@ class ShortCutterWindows(ShortCutter):
                     match = True
         return match
 
-    def get_paths(self):
+    def _get_paths(self):
         """
         Gets paths from the PATH environment variable and (if possible)
         the path of the Python/Scripts directory.
 
         Returns a list of paths.
         """
-        paths = super(ShortCutterWindows, self).get_paths()
+        paths = super(ShortCutterWindows, self)._get_paths()
         
         # add the python scripts path
         python_scripts_path = self._get_python_scripts_path()

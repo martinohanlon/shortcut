@@ -21,27 +21,45 @@ class ShortCutter(object):
         """
         Creates a desktop shortcut to a target.
 
-        The target can be a fully qualified file path `/usr/bin/gedit`  
-        or a simple application name `gedit`.
+        :param str target:
+            The target to create a shortcut for, it can be a fully qualified
+            file path `/path/to/my_program` or a simple application name 
+            `my_program`.
+
+        Returns a tuple of (target_name, target_path, shortcut_file_path)
         """
-
-        # get the target name by getting the file name and removing the extension
-        target_name = os.path.splitext(os.path.basename(target))[0]
-
-        # find for the target path  
-        target_path = self.find_target(target)
-
         if not os.path.isdir(self._desktop_folder):
             raise ShortcutNoDesktopError("Desktop folder '{}' not found".format(self._desktop_folder))
 
-        return self.create_shortcut_file(target_name, target_path, self._desktop_folder)
+        return self.create_shortcut(target, self._desktop_folder)
 
     def create_menu_shortcut(self, target):
         """
         Creates a menu shortcut to a target.
 
-        The target can be a fully qualified file path `/usr/bin/gedit`  
-        or a simple application name `gedit`.
+        :param str target:
+            The target to create a shortcut for, it can be a fully qualified
+            file path `/path/to/my_program` or a simple application name 
+            `my_program`.
+        
+        Returns a tuple of (target_name, target_path, shortcut_file_path)
+        """
+        if not os.path.isdir(self._menu_folder):
+            raise ShortcutNoMenuError("Menu folder '{}' not found".format(self._menu_folder))
+
+        return self.create_shortcut(target, self._menu_folder) 
+
+    def create_shortcut(self, target, shortcut_directory):
+        """
+        Creates a shortcut to a target.
+
+        :param str target:
+            The target to create a shortcut for, it can be a fully qualified
+            file path `/path/to/my_program` or a simple application name 
+            `my_program`.
+
+        :param str shortcut_directory:
+            The directory path where the shortcut should be created.
 
         Returns a tuple of (target_name, target_path, shortcut_file_path)
         """
@@ -51,20 +69,24 @@ class ShortCutter(object):
         # find for the target path  
         target_path = self.find_target(target)
 
-        if not os.path.isdir(self._menu_folder):
-            raise ShortcutNoMenuError("Menu folder '{}' not found".format(self._menu_folder))
+        shortcut_file_path = self._create_shortcut_file(target_name, target_path, shortcut_directory)
 
-        return self.create_shortcut_file(target_name, target_path, self._menu_folder) 
+        return (target_name, target_path, shortcut_file_path)
 
     #needs overriding
-    def create_shortcut_file(self, target_name, target_path, shortcut_folder):
+    def _create_shortcut_file(self, target_name, target_path, shortcut_directory):
         raise ShortcutError("create_shortcut_file needs overriding")
-        
+
     def find_target(self, target):
         """
-        Returns a target file path.
+        Finds a target file path
 
-        Raises ShortcutTargetError if the target cannot be found.
+        :param str target:
+            The target to find, it can be a fully qualified
+            file path `/path/to/my_program` or a simple application name 
+            `my_program`.
+
+        Returns a target file path or ``None`` if a path cant be found.
         """
         if os.path.isfile(target):
             return os.path.abspath(target)
@@ -73,19 +95,22 @@ class ShortCutter(object):
             if len(targets) > 0:
                 return targets[0]
             else:
-                raise ShortcutTargetError("Unable to find '{}'".format(target))
+                return None
 
     def search_for_target(self, target):
         """
-        Searches for a target file.
+        Searches for a target executable file.
 
-        Returns a list of potential file paths.
+        :param str target:
+            The target to find.
+
+        Returns a list of potential target file paths, it no paths are found an empty list is returned.s
         """
         # potential list of app paths
         target_paths = []
 
         # create list of potential directories
-        paths = self.get_paths()
+        paths = self._get_paths()
 
         # loop through each folder
         for path in paths:
@@ -108,7 +133,7 @@ class ShortCutter(object):
     def _is_file_the_target(self, target, file_name, file_path):
         raise ShortcutError("_is_file_the_target needs overriding")
 
-    def get_paths(self):
+    def _get_paths(self):
         """
         Gets paths from the PATH environment variables.
 
