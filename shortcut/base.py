@@ -153,3 +153,25 @@ class ShortCutter(object):
         paths = os.environ['PATH'].split(os.pathsep)
         
         return paths
+
+    @property
+    def desktop_directory(self):
+        """
+        Sets or returns the directory used when creating desktop shortcuts. 
+        """
+        return self._desktop_folder
+
+    @desktop_directory.setter
+    def desktop_directory(self, value):
+        self._desktop_folder = value
+
+    @property
+    def menu_directory(self):
+        """
+        Sets or returns the directory used when creating menu shortcuts. 
+        """
+        return self._menu_folder
+
+    @menu_directory.setter
+    def menu_directory(self, value):
+        self._menu_folder = value
