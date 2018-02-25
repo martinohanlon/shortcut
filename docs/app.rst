@@ -1,9 +1,9 @@
 shortcut app
 ============
 
-Shortcut's command line application creates desktop and menu shortcuts.
+The command line application ``shortcut`` creates desktop and menu shortcuts.
 
-It will search for an application if only a name is given or use a direct file path if given.
+``shortcut`` will search for the app or use a full path if given.
 
 Usage
 -----
@@ -21,22 +21,22 @@ The ``-h`` or ``--help`` option will display the help::
 
 ::
 
-    usage: shortcut [-h] [--desktop] [--menu] target
+    usage: shortcut [-h] [-d] [-m] target
 
     Auto shortcut creator
 
     positional arguments:
-    target      The target executable to create Desktop and Menu shortcuts
+    target         The target executable to create Desktop and Menu shortcuts
 
     optional arguments:
-    -h, --help  show this help message and exit
-    --desktop   Only create a desktop shortcut
-    --menu      Only create a menu shortcut
-
-To only create a desktop shortcut::
+    -h, --help     show this help message and exit
+    -d, --desktop  Only create a desktop shortcut
+    -m, --menu     Only create a menu shortcut
+  
+To only create a desktop shortcut use ``--desktop``::
 
     shortcut --desktop python
 
-Or just a menu shortcut::
+Or just a menu shortcut using ``--menu``::
 
     shortcut --menu python

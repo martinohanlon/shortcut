@@ -22,8 +22,8 @@ def main():
 
     parser = ArgumentParser(description="Auto shortcut creator")
     parser.add_argument("target", help="The target executable to create Desktop and Menu shortcuts")
-    parser.add_argument("--desktop", help="Only create a desktop shortcut", action="store_true")
-    parser.add_argument("--menu", help="Only create a menu shortcut", action="store_true")
+    parser.add_argument("-d", "--desktop", help="Only create a desktop shortcut", action="store_true")
+    parser.add_argument("-m", "--menu", help="Only create a menu shortcut", action="store_true")
     args = parser.parse_args()
     
     create_desktop = args.desktop
