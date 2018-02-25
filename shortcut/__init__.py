@@ -29,7 +29,7 @@ def main():
     create_desktop = args.desktop
     create_menu = args.menu
 
-    # if desktop of menu hasnt been specified create both (i.e. the default)
+    # if desktop or menu hasnt been specified create both (i.e. the default)
     if not create_desktop and not create_menu:
         create_desktop = True
         create_menu = True

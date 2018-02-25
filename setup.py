@@ -11,26 +11,18 @@ else:
     raise ValueError('Unrecognized major version of Python')
 
 __project__ = 'shortcut'
-__desc__ = 'A X platform super simple api and command line application to create shortcuts'
+__desc__ = 'A X platform super simple api and command line application for creating shortcuts'
 __version__ = '0.0.1'
 __author__ = "Martin O'Hanlon"
 __author_email__ = 'martin@ohanlonweb.com'
 __license__ = 'MIT'
 __url__ = 'https://github.com/martinohanlon/shortcut'
-__requires__ = []
+#__requires__ = []
 __extra_requires__ = {
     ':sys_platform == "win32"': [
-        #'pywin32',
         'pypiwin32',
         'winshell',
         ],
-#    ':"linux" in sys_platform': [
-#        'some_module',
-#        ],
-#    ':"darwin" in sys_platform': [
-#        'some_module',
-#        ],
-
     }
 
 __classifiers__ = [

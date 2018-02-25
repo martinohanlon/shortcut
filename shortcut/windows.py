@@ -21,7 +21,7 @@ import winshell
 import sys
 import os
 from .exception import *
-from .shortcutter import ShortCutter
+from .base import ShortCutter
 
 class ShortCutterWindows(ShortCutter):
 

@@ -1,16 +1,15 @@
 Shortcut
 ========
 
-Shortcut is a work in progress solution to help with creating desktop and menu shortcuts for files and applications.
+Shortcut is a cross platform command line application and API for creating shortcuts.
 
-It was created by me to solve a simple problem - if you install python packages using pip there is no way of creating a shortcut to the program.
+It will accept full paths and application names, shortcut doing its best to find your app, searching for the usual suspects in the usual places (i.e. those in the PATH).
 
-Shortcut does its best to find your app, searching for the usual suspects in the usual places (i.e. those in the PATH).
+To create shortcuts for ``python``:: 
 
-Status
-------
+    shortcut python 
 
-WORK IN PROGRESS - windows, linux and macos support, massively experimental, probably doesnt work.
+It was created to solve a simple problem - if you install a python package using pip there is no simple way of creating a shortcut to the program it installs.
 
 Install
 -------
@@ -36,24 +35,11 @@ MacOS ::
     cd shortcut
     python3 setup.py install
 
-Usage
------
+Status
+------
 
-The `shortcut` command line application will create desktop and menu shortcuts ::
+Alpha (0.0.1) - tested and works but issues_ maybe experienced and API changes are possible.
 
-    usage: shortcut [-h] [--desktop] [--menu] target
+It should work with Windows, MacOS and Linux operating systems.
 
-    Auto shortcut creator
-
-    positional arguments:
-    target      The target executable to create Desktop and Menu shortcuts
-
-    optional arguments:
-    -h, --help  show this help message and exit
-    --desktop   Only create a desktop shortcut
-    --menu      Only create a menu shortcut
-
-To create a shortcut for an application called `my_app` ::
-
-    shortcut my_app
-
+.. _issues: https://github.com/martinohanlon/shortcut/issues

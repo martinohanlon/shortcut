@@ -4,6 +4,16 @@ import stat
 from .exception import *
 
 class ShortCutter(object):
+    """
+    Creates applicaton shortcuts for Windows, MacOS and Linux operating systems.
+
+    To create desktop and menu shortcuts to `python`::
+
+        from shortcut import ShortCutter
+        s = ShortCutter()
+        s.create_desktop_shortcut("python")
+        s.create_menu_shortcut("python")
+    """
 
     def __init__(self):
         self._desktop_folder = self._get_desktop_folder()
@@ -79,14 +89,14 @@ class ShortCutter(object):
 
     def find_target(self, target):
         """
-        Finds a target file path
+        Finds a file path for a target application.
 
         :param str target:
             The target to find, it can be a fully qualified
             file path `/path/to/my_program` or a simple application name 
             `my_program`.
 
-        Returns a target file path or ``None`` if a path cant be found.
+        Returns a single target file path or ``None`` if a path cant be found.
         """
         if os.path.isfile(target):
             return os.path.abspath(target)
@@ -99,7 +109,7 @@ class ShortCutter(object):
 
     def search_for_target(self, target):
         """
-        Searches for a target executable file.
+        Searches for a target application.
 
         :param str target:
             The target to find.

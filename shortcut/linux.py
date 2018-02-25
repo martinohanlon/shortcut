@@ -1,7 +1,7 @@
 import os
 import stat
 from .exception import *
-from .shortcutter import ShortCutter
+from .base import ShortCutter
             
 class ShortCutterLinux(ShortCutter):
     
