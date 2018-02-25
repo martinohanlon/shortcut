@@ -11,7 +11,7 @@ else:
     raise ValueError('Unrecognized major version of Python')
 
 __project__ = 'shortcut'
-__desc__ = 'A X platform super simple program to create shortcuts'
+__desc__ = 'A X platform super simple api and command line application to create shortcuts'
 __version__ = '0.0.1'
 __author__ = "Martin O'Hanlon"
 __author_email__ = 'martin@ohanlonweb.com'
