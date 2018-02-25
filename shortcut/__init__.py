@@ -10,7 +10,7 @@ if platform == "win32":
 elif platform == "linux":
     from .linux import  ShortCutterLinux as ShortCutter
 elif platform == "darwin":
-    raise Exception("Error: macos not support (coming soon)")
+    from .macos import ShortCutterMacOS as ShortCutter
 else:
     raise Exception("Error: '{}' platform is not supported.")
 
@@ -21,32 +21,42 @@ def main():
     from argparse import ArgumentParser
 
     parser = ArgumentParser(description="Auto shortcut creator")
-    parser.add_argument("target", help="The target app or file to create a shortcut for")
-    parser.add_argument("--nodesktop", help="Dont create a desktop shortcut", action="store_true")
-    parser.add_argument("--nomenu", help="Dont create a menu shortcut", action="store_true")
+    parser.add_argument("target", help="The target executable to create Desktop and Menu shortcuts")
+    parser.add_argument("--desktop", help="Only create a desktop shortcut", action="store_true")
+    parser.add_argument("--menu", help="Only create a menu shortcut", action="store_true")
     args = parser.parse_args()
     
+    create_desktop = args.desktop
+    create_menu = args.menu
+
+    # if desktop of menu hasnt been specified create both (i.e. the default)
+    if not create_desktop and not create_menu:
+        create_desktop = True
+        create_menu = True
+
     shortcutter = ShortCutter()
 
     try:
         target_path = shortcutter.find_target(args.target)
 
         desktop_created = False
-        try:
-            shortcutter.create_desktop_shortcut(target_path)
-            desktop_created = True
-        except ShortcutNoDesktopError as e:
-            print("Failed to create desktop shortcut")
-            print(e)
-        
+        if create_desktop:
+            try:
+                shortcutter.create_desktop_shortcut(target_path)
+                desktop_created = True
+            except ShortcutNoDesktopError as e:
+                print("Failed to create desktop shortcut")
+                print(e)
+
         menu_created = False
-        try:
-            shortcutter.create_menu_shortcut(target_path)
-            menu_created = True
-        except ShortcutNoMenuError as e:
-            print("Failed to create menu shortcut")
-            print(e)
-        
+        if create_menu:    
+            try:
+                shortcutter.create_menu_shortcut(target_path)
+                menu_created = True
+            except ShortcutNoMenuError as e:
+                print("Failed to create menu shortcut")
+                print(e)
+            
         if desktop_created or menu_created:
             print("Shortcut created for '{}'".format(args.target))
 

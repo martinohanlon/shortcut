@@ -10,7 +10,7 @@ Shortcut does its best to find your app, searching for the usual suspects in the
 Status
 ------
 
-WORK IN PROGRESS - windows and linux support, massively experimental, probably doesnt work.
+WORK IN PROGRESS - windows, linux and macos support, massively experimental, probably doesnt work.
 
 Install
 -------
