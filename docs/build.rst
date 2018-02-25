@@ -86,3 +86,5 @@ Build for deployment::
 Deploy to `PyPI`_::
 
     twine upload dist/* --skip-existing
+
+.. _PyPI: https://pypi.python.org/pypi/shortcut
