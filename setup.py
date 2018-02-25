@@ -12,7 +12,7 @@ else:
 
 __project__ = 'shortcut'
 __desc__ = 'A X platform super simple api and command line application for creating shortcuts'
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 __author__ = "Martin O'Hanlon"
 __author_email__ = 'martin@ohanlonweb.com'
 __license__ = 'MIT'

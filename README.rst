@@ -47,7 +47,7 @@ Shortcut is available on pypi_ and can be installed using ``pip``:
 Status
 ------
 
-Alpha (0.0.1) - tested and works but issues_ maybe experienced and API changes are possible.
+Alpha - tested and works but issues_ maybe experienced and API changes are possible.
 
 It should work with Windows, MacOS and Linux operating systems.
 
