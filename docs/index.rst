@@ -9,3 +9,4 @@ Table of Contents
    app
    api
    os
+   changelog
