@@ -3,7 +3,7 @@ Shortcut
 
 Shortcut is a cross platform command line application and API for creating shortcuts.
 
-Shortcut will do its best to find your app, searching for the usual suspects in the usual places (i.e. those in the PATH), or you can give it a full path.
+``shortcut`` will do its best to find your app, searching for the usual suspects in the usual places (i.e. those in the PATH), or you can give it a full path.
 
 To create desktop and menu shortcuts for ``python``: 
 
@@ -18,7 +18,12 @@ To create desktop and menu shortcuts for ``python``:
     s.create_desktop_shortcut("python")
     s.create_menu_shortcut("python")
 
-It was created to solve a simple problem - if you install a python package using pip there is no simple way of creating a shortcut to the program it installs.
+It was created to solve a simple problem - if you install a python package using ``pip`` there is no simple way of creating a shortcut to the program it installs.
+
+Documentation
+-------------
+
+There is comprehensive documentation at `shortcut.readthedocs.io`_.
 
 Install
 -------
@@ -46,3 +51,4 @@ It should work with Windows, MacOS and Linux operating systems.
 
 .. _issues: https://github.com/martinohanlon/shortcut/issues
 .. _pypi: https://pypi.python.org/pypi/shortcut
+.. _shortcut.readthedocs.io: https://shortcut.readthedocs.io
