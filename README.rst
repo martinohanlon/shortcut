@@ -1,6 +1,8 @@
 Shortcut
 ========
 
+|pypibadge| |docsbadge|
+
 Shortcut is a cross platform command line application and API for creating shortcuts.
 
 ``shortcut`` will do its best to find your app, searching for the usual suspects in the usual places (i.e. those in the PATH), or you can give it a full path.
@@ -45,10 +47,18 @@ Shortcut is available on pypi_ and can be installed using ``pip``:
 Status
 ------
 
-Alpha (0.0.1) - tested and works but issues_ maybe experienced and API changes are possible.
+Alpha - tested and works but issues_ maybe experienced and API changes are possible.
 
 It should work with Windows, MacOS and Linux operating systems.
 
 .. _issues: https://github.com/martinohanlon/shortcut/issues
 .. _pypi: https://pypi.python.org/pypi/shortcut
 .. _shortcut.readthedocs.io: https://shortcut.readthedocs.io
+
+.. |pypibadge| image:: https://badge.fury.io/py/shortcut.svg
+   :target: https://badge.fury.io/py/bluedot
+   :alt: Latest Version
+
+.. |docsbadge| image:: https://readthedocs.org/projects/shortcut/badge/
+   :target: https://readthedocs.org/projects/shortcut/
+   :alt: Docs
