@@ -23,26 +23,19 @@ It was created to solve a simple problem - if you install a python package using
 Install
 -------
 
-(for the moment) Clone the repo and run the setup 
+Shortcut is available on pypi_ and can be installed using ``pip``:
 
-Linux ::
+- Windows ::
 
-    git clone https://github.com/martinohanlon/shortcut
-    cd shortcut
-    sudo python3 setup.py install
+    pip install shortcut
 
-Windows ::
+- MacOS ::
 
-    git clone https://github.com/martinohanlon/shortcut
-    cd shortcut
-    python setup.py install
+    pip3 install shortcut
 
+- Linux ::
 
-MacOS ::
-
-    git clone https://github.com/martinohanlon/shortcut
-    cd shortcut
-    python3 setup.py install
+    sudo pip3 install shortcut
 
 Status
 ------
@@ -52,3 +45,4 @@ Alpha (0.0.1) - tested and works but issues_ maybe experienced and API changes a
 It should work with Windows, MacOS and Linux operating systems.
 
 .. _issues: https://github.com/martinohanlon/shortcut/issues
+.. _pypi: https://pypi.python.org/pypi/shortcut
