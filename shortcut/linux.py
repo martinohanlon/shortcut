@@ -2,13 +2,16 @@ import os
 import stat
 from .exception import *
 from .base import ShortCutter
-            
+
 class ShortCutterLinux(ShortCutter):
-    
+
     def _get_desktop_folder(self):
         import subprocess
-        return subprocess.check_output(['xdg-user-dir', 'DESKTOP']).decode('utf-8').replace('\n', '')
-        
+        return subprocess.check_output([
+            'xdg-user-dir',
+            'DESKTOP'
+        ]).decode('utf-8').replace('\n', '')
+
     def _get_menu_folder(self):
         return os.path.join(os.path.join(os.path.expanduser('~')), '.local', 'share', 'applications')
 
@@ -29,9 +32,9 @@ class ShortCutterLinux(ShortCutter):
             # make the launch file executable
             st = os.stat(shortcut_file_path)
             os.chmod(shortcut_file_path, st.st_mode | stat.S_IEXEC)
-        
+
         return shortcut_file_path
-           
+
     def _is_file_the_target(self, target, file_name, file_path):
         match = False
         if file_name == target:
