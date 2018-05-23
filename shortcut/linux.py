@@ -10,7 +10,7 @@ class ShortCutterLinux(ShortCutter):
         return subprocess.check_output([
             'xdg-user-dir',
             'DESKTOP'
-        ]).decode('utf-8').replace('\n', '')
+        ]).decode('utf-8').strip()
 
     def _get_menu_folder(self):
         return os.path.join(os.path.join(os.path.expanduser('~')), '.local', 'share', 'applications')
