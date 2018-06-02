@@ -2,9 +2,11 @@ import os
 import stat
 from .exception import *
 from .base import ShortCutter
+import traceback
+import sys
+
 
 class ShortCutterLinux(ShortCutter):
-
     def _get_desktop_folder(self):
         import subprocess
         return subprocess.check_output([
@@ -15,11 +17,23 @@ class ShortCutterLinux(ShortCutter):
     def _get_menu_folder(self):
         return os.path.join(os.path.join(os.path.expanduser('~')), '.local', 'share', 'applications')
 
+    def _create_shortcut_to_dir(self, target_name, target_path, shortcut_directory):
+        """
+        Creates a Unix shortcut to a directory via symbolic link.
+
+        Returns shortcut_file_path
+        """
+        shortcut_path = os.path.join(shortcut_directory, target_name)
+        if os.path.islink(shortcut_path):
+            os.remove(shortcut_path)
+        os.symlink(target_path, shortcut_path)
+        return shortcut_file_path
+
     def _create_shortcut_file(self, target_name, target_path, shortcut_directory):
         """
         Creates a Linux shortcut file.
 
-        Returns a tuple of (target_name, target_path, shortcut_file_path)
+        Returns shortcut_file_path
         """
         shortcut_file_path = os.path.join(shortcut_directory, "launch_" + target_name + ".desktop")
         with open(shortcut_file_path, "w") as shortcut:

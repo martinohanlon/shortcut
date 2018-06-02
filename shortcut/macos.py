@@ -4,8 +4,8 @@ from .linux import ShortCutterLinux
 from tempfile import NamedTemporaryFile
 import subprocess
 
-class ShortCutterMacOS(ShortCutterLinux):
 
+class ShortCutterMacOS(ShortCutterLinux):
     def _get_desktop_folder(self):
         return os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')
 
@@ -16,7 +16,7 @@ class ShortCutterMacOS(ShortCutterLinux):
         """
         Creates a MacOS app which opens an executable via the terminal
 
-        Returns a the file path of the shortcut created
+        Returns the file path of the shortcut created
         """
         shortcut_file_path = os.path.join(shortcut_directory, target_name + ".app")
 
