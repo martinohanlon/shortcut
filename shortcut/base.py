@@ -5,7 +5,7 @@ from .exception import *
 
 class ShortCutter(object):
     """
-    Creates applicaton shortcuts for Windows, MacOS and Linux operating systems.
+    Creates application shortcuts for Windows, MacOS and Linux operating systems.
 
     To create desktop and menu shortcuts to `python`::
 
@@ -74,20 +74,39 @@ class ShortCutter(object):
         Returns a tuple of (target_name, target_path, shortcut_file_path)
         """
         target_name = kwargs.pop('target_name', None)
-        if target_name is None:
-            # get the target name by getting the file name and removing the extension
-            target_name = os.path.splitext(os.path.basename(target))[0]
-
+        print(target_name)
+        
         # find for the target path  
         target_path = self.find_target(target)
 
-        shortcut_file_path = self._create_shortcut_file(target_name, target_path, shortcut_directory)
+        if target_path is not None:
+            if os.path.isfile(target_path):
+                if target_name is None:
+                    # get the target name by getting the file name and removing the extension
+                    target_name = os.path.splitext(os.path.basename(target_path))[0] 
+                
+                shortcut_file_path = self._create_shortcut_to_file(target_name, target_path, shortcut_directory)
+
+            elif os.path.isdir(target_path):
+                if target_name is None:
+                    target_name = os.path.basename(target_path)
+                    print(target_name)
+
+                shortcut_file_path = self._create_shortcut_to_dir(target_name, target_path, shortcut_directory)
+
+            else:
+                raise ShortcutError("Target `{}` is not a directory or file!".format(target_path))
+        else:
+            raise ShortcutTargetNotFound("Target '{}' not found".format(target))
 
         return (target_name, target_path, shortcut_file_path)
 
     #needs overriding
-    def _create_shortcut_file(self, target_name, target_path, shortcut_directory):
-        raise ShortcutError("create_shortcut_file needs overriding")
+    def _create_shortcut_to_file(self, target_name, target_path, shortcut_directory):
+        raise ShortcutError("_create_shortcut_to_file needs overriding")
+
+    def _create_shortcut_to_dir(self, target_name, target_path, shortcut_directory):
+        raise ShortcutError("_create_shortcut_to_dir needs overriding")
 
     def find_target(self, target):
         """
@@ -100,7 +119,7 @@ class ShortCutter(object):
 
         Returns a single target file path or ``None`` if a path cant be found.
         """
-        if os.path.isfile(target):
+        if os.path.exists(target):
             return os.path.abspath(target)
         else:
             targets = self.search_for_target(target)

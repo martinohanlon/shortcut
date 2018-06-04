@@ -11,7 +11,7 @@ class ShortCutterLinux(ShortCutter):
     def _get_menu_folder(self):
         return os.path.join(os.path.join(os.path.expanduser('~')), '.local', 'share', 'applications')
 
-    def _create_shortcut_file(self, target_name, target_path, shortcut_directory):
+    def _create_shortcut_to_file(self, target_name, target_path, shortcut_directory):
         """
         Creates a Linux shortcut file.
 

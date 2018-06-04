@@ -35,7 +35,7 @@ class ShortCutterWindows(ShortCutter):
     def _get_menu_folder(self):
         return winshell.folder("CSIDL_PROGRAMS")
 
-    def _create_shortcut_file(self, target_name, target_path, shortcut_directory):
+    def _create_shortcut_to_file(self, target_name, target_path, shortcut_directory):
         """
         Creates a Windows shortcut file.
 
@@ -50,7 +50,24 @@ class ShortCutterWindows(ShortCutter):
             Description = "Shortcut to" + target_name)
 
         return shortcut_file_path
-           
+
+    def _create_shortcut_to_dir(self, target_name, target_path, shortcut_directory):
+        """
+        Creates a Windows shortcut file.
+
+        Returns a tuple of (target_name, target_path, shortcut_file_path)
+        """
+        shortcut_file_path = os.path.join(shortcut_directory, target_name + ".lnk")
+
+        winshell.CreateShortcut(
+            Path=os.path.join(shortcut_file_path),
+            Target=target_path,
+            StartIn=target_path,
+            Icon=(target_path, 0),
+            Description="Shortcut to" + target_path)
+
+        return shortcut_file_path
+
     def _is_file_the_target(self, target, file_name, file_path):
         match = False
         # does the target have an extension?

@@ -9,7 +9,7 @@ class ShortCutterMacOS(ShortCutterLinux):
     def _get_menu_folder(self):
         return os.path.join('/', 'Applications') 
         
-    def _create_shortcut_file(self, target_name, target_path, shortcut_directory):
+    def _create_shortcut_to_file(self, target_name, target_path, shortcut_directory):
         """
         Creates a MacOS app which opens an executable via the terminal
 

@@ -6,3 +6,6 @@ class ShortcutNoDesktopError(ShortcutError):
 
 class ShortcutNoMenuError(ShortcutError):
     pass
+
+class ShortcutTargetNotFound(ShortcutError):
+    pass
