@@ -24,12 +24,36 @@ class ShortCutterLinux(ShortCutter):
             shortcut.write("Exec={}\n".format(target_path))
             shortcut.write("Terminal=true\n")
             shortcut.write("Type=Application\n")
+            shortcut.write("Icon=terminal.png\n")
 
             # make the launch file executable
             st = os.stat(shortcut_file_path)
             os.chmod(shortcut_file_path, st.st_mode | stat.S_IEXEC)
         
         return shortcut_file_path
+
+    def _create_shortcut_to_dir(self, target_name, target_path, shortcut_directory):
+        """
+        Creates a Linux shortcut file.
+
+        Returns a tuple of (target_name, target_path, shortcut_file_path)
+        """
+        shortcut_file_path = os.path.join(shortcut_directory, "open_" + target_name + ".desktop")
+        with open(shortcut_file_path, "w") as shortcut:
+            shortcut.write("[Desktop Entry]\n")
+            shortcut.write("Name={}\n".format(target_name))
+            shortcut.write("Type=Application\n")
+            shortcut.write('Exec=xdg-open "{}"\n'.format(target_path))
+            shortcut.write("Path={}\n".format(target_path))
+            shortcut.write("Icon=system-file-manager.png\n")
+            
+
+            # make the launch file executable
+            st = os.stat(shortcut_file_path)
+            os.chmod(shortcut_file_path, st.st_mode | stat.S_IEXEC)
+        
+        return shortcut_file_path
+    
            
     def _is_file_the_target(self, target, file_name, file_path):
         match = False

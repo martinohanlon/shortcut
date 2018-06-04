@@ -74,7 +74,6 @@ class ShortCutter(object):
         Returns a tuple of (target_name, target_path, shortcut_file_path)
         """
         target_name = kwargs.pop('target_name', None)
-        print(target_name)
         
         # find for the target path  
         target_path = self.find_target(target)
@@ -90,8 +89,7 @@ class ShortCutter(object):
             elif os.path.isdir(target_path):
                 if target_name is None:
                     target_name = os.path.basename(target_path)
-                    print(target_name)
-
+    
                 shortcut_file_path = self._create_shortcut_to_dir(target_name, target_path, shortcut_directory)
 
             else:
