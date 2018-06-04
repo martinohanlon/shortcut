@@ -27,7 +27,7 @@ class ShortCutter(object):
     def _get_menu_folder(self):
         raise ShortcutError("_get_menu_folder needs overriding")
 
-    def create_desktop_shortcut(self, target):
+    def create_desktop_shortcut(self, target, **kwargs):
         """
         Creates a desktop shortcut to a target.
 
@@ -41,9 +41,9 @@ class ShortCutter(object):
         if not os.path.isdir(self._desktop_folder):
             raise ShortcutNoDesktopError("Desktop folder '{}' not found".format(self._desktop_folder))
 
-        return self.create_shortcut(target, self._desktop_folder)
+        return self.create_shortcut(target, self._desktop_folder, **kwargs)
 
-    def create_menu_shortcut(self, target):
+    def create_menu_shortcut(self, target, **kwargs):
         """
         Creates a menu shortcut to a target.
 
@@ -57,9 +57,9 @@ class ShortCutter(object):
         if not os.path.isdir(self._menu_folder):
             raise ShortcutNoMenuError("Menu folder '{}' not found".format(self._menu_folder))
 
-        return self.create_shortcut(target, self._menu_folder) 
+        return self.create_shortcut(target, self._menu_folder, **kwargs) 
 
-    def create_shortcut(self, target, shortcut_directory):
+    def create_shortcut(self, target, shortcut_directory, **kwargs):
         """
         Creates a shortcut to a target.
 
@@ -73,8 +73,10 @@ class ShortCutter(object):
 
         Returns a tuple of (target_name, target_path, shortcut_file_path)
         """
-        # get the target name by getting the file name and removing the extension
-        target_name = os.path.splitext(os.path.basename(target))[0]
+        target_name = kwargs.pop('target_name', None)
+        if target_name is None:
+            # get the target name by getting the file name and removing the extension
+            target_name = os.path.splitext(os.path.basename(target))[0]
 
         # find for the target path  
         target_path = self.find_target(target)
