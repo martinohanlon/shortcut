@@ -33,3 +33,28 @@ class ShortCutterMacOS(ShortCutterLinux):
         sf.close()
 
         return shortcut_file_path
+
+    def _create_shortcut_to_dir(self, target_name, target_path, shortcut_directory):
+        """
+        Creates a MacOS app which opens a folder via finder
+
+        Returns a the file path of the shortcut created
+        """
+        shortcut_file_path = os.path.join(shortcut_directory, target_name + ".app")
+
+        # create the AppleScript script
+        sf = NamedTemporaryFile(mode = "w")
+        sf.write('tell application "Finder"\n')
+        sf.write('activate\n')
+        sf.write('to open POSIX file "{}"\n'.format(target_path))
+        sf.write('end tell\n')
+        sf.flush()
+
+        # compile the script into an application
+        result = subprocess.run(["osacompile", "-o", shortcut_file_path, sf.name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if len(result.stderr):
+            raise ShortcutError("Error occurred creating app - {}".format(str(result.stderr)))
+
+        sf.close()
+
+        return shortcut_file_path
