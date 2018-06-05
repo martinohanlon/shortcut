@@ -45,8 +45,7 @@ class ShortCutterMacOS(ShortCutterLinux):
         # create the AppleScript script
         sf = NamedTemporaryFile(mode = "w")
         sf.write('tell application "Finder"\n')
-        sf.write('activate\n')
-        sf.write('to open POSIX file "{}"\n'.format(target_path))
+        sf.write('open POSIX file "{}"\n'.format(target_path))
         sf.write('end tell\n')
         sf.flush()
 
