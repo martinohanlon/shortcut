@@ -15,24 +15,47 @@ class ShortCutter(object):
         s = ShortCutter()
         s.create_desktop_shortcut("python")
         s.create_menu_shortcut("python")
+        
+    Attributes:
+    -----------
+    raise_errors : bool, default True
+        Whether to raise exceptions or skip errors and continue
+    error_log : object, default None
+        File object where to write errors when raise_errors=False.
+        Default is `None` - do not write errors.
+        Can also be `sys.stderr` or `io.StringIO()`.
+    desktop_folder : str
+        Directory used when creating desktop shortcuts
+    menu_folder : str
+        Directory used when creating menu shortcuts
+    bin_folder : str
+        `Scripts` or `bin` dir path (the one to where setup.py installs)
+    site_packages : str
+        Site packages dir path (the one to where setup.py installs)
     """
 
-    def __init__(self, silent=False, err_file=None):
+    def __init__(self, raise_errors=True, error_log=None):
         """
         Creates ShortCutter.
 
-        :param bool silent:
-            Whether to use shortcut in a silent mode.
-        :param err_file:
-            File object where to write errors in a silent mode. Default is sys.stderr
+        :param bool raise_errors:
+            Whether to raise exceptions or skip errors and continue.
+        :param error_log:
+            File object where to write errors when raise_errors=False.
+            Default is `None` - do not write errors.
+            Can also be `sys.stderr` or `io.StringIO()`.
         """
-        self._silent = silent
-        if silent:
-            self._err_file = sys.stderr if (err_file is None) else err_file
-        else:
-            self._err_file = None
-        self._desktop_folder = self._get_desktop_folder()
-        self._menu_folder = self._get_menu_folder()
+        self.raise_errors = raise_errors
+        self.error_log = error_log
+        self.desktop_folder = self._get_desktop_folder()
+        self.menu_folder = self._get_menu_folder()
+        self.bin_folder = self._get_bin_folder()
+        self.site_packages = self._get_site_packages()
+        self._custom_init()
+
+    # might be overridden if needed
+    def _custom_init(self):
+        pass
 
     # should be overridden
     def _get_desktop_folder(self):
@@ -42,7 +65,15 @@ class ShortCutter(object):
     def _get_menu_folder(self):
         raise ShortcutError("_get_menu_folder needs overriding")
 
-    def create_desktop_shortcut(self, target, target_name=None, virtual_type=None):
+    # should be overridden
+    def _get_bin_folder(self):
+        raise ShortcutError("_get_bin_folder needs overriding")
+
+    # should be overridden
+    def _get_site_packages(self):
+        raise ShortcutError("_get_site_packages needs overriding")
+
+    def create_desktop_shortcut(self, target, shortcut_name=None, entry_point=False):
         """
         Creates a desktop shortcut to a target.
 
@@ -50,30 +81,25 @@ class ShortCutter(object):
             The target to create a shortcut for, it can be a fully qualified
             file path `/path/to/my_program` or a simple application name 
             `my_program`.
-        :param str target_name:
+        :param str shortcut_name:
             Name of the shortcut without extension (.lnk would be appended if needed).
             If `None` uses the target filename. Defaults to `None`.
-        :param str virtual_type: `None` | `'file'` | `'dir'`
-            Whether to create shortcut to yet non-existing file/dir (creates dir)
-            Default is `None` - do not create
+        :param bool entry_point:
+            Whether to create shortcut to executable created via `entry_points` > `'console_scripts'` in `setup.py`
+            If `create_shortcut` is run inside `setup.py` executable was not moved to it's place yet.
 
-        Returns a tuple of (target_name, target_path, shortcut_file_path)
+        Returns a tuple of (shortcut_name, target_path, shortcut_file_path)
         """
-        isdir, virtual = self._isdir_virtual(target, virtual_type)
-
-        if not os.path.isdir(self._desktop_folder):
-            msg = "Desktop folder '{}' not found.".format(self._desktop_folder)
-            if not self._silent:
+        if not os.path.isdir(self.desktop_folder):
+            msg = "Desktop folder '{}' not found.".format(self.desktop_folder)
+            if self.raise_errors:
                 raise ShortcutNoDesktopError(msg)
             else:
-                self._err_file.write(msg + '\n')
+                self.error_log.write(msg + '\n')
         else:
-            if isdir:
-                return self.create_shortcut_to_dir(target, self._desktop_folder, target_name, virtual)
-            else:
-                return self.create_shortcut(target, self._desktop_folder, target_name, virtual)
+            return self.create_shortcut(target, self.desktop_folder, shortcut_name, entry_point)
 
-    def create_menu_shortcut(self, target, target_name=None, virtual_type=None):
+    def create_menu_shortcut(self, target, shortcut_name=None, entry_point=False):
         """
         Creates a menu shortcut to a target.
 
@@ -81,30 +107,25 @@ class ShortCutter(object):
             The target to create a shortcut for, it can be a fully qualified
             file path `/path/to/my_program` or a simple application name 
             `my_program`.
-        :param str target_name:
+        :param str shortcut_name:
             Name of the shortcut without extension (.lnk would be appended if needed).
             If `None` uses the target filename. Defaults to `None`.
-        :param str virtual_type: `None` | `'file'` | `'dir'`
-            Whether to create shortcut to yet non-existing file/dir (creates dir)
-            Default is `None` - do not create
+        :param bool entry_point:
+            Whether to create shortcut to executable created via `entry_points` > `'console_scripts'` in `setup.py`
+            If `create_shortcut` is run inside `setup.py` executable was not moved to it's place yet.
 
-        Returns a tuple of (target_name, target_path, shortcut_file_path)
+        Returns a tuple of (shortcut_name, target_path, shortcut_file_path)
         """
-        isdir, virtual = self._isdir_virtual(target, virtual_type)
-
-        if not os.path.isdir(self._menu_folder):
-            msg = "Menu folder '{}' not found.".format(self._menu_folder)
-            if not self._silent:
+        if not os.path.isdir(self.menu_folder):
+            msg = "Menu folder '{}' not found.".format(self.menu_folder)
+            if self.raise_errors:
                 raise ShortcutNoMenuError(msg)
             else:
-                self._err_file.write(msg + '\n')
+                self.error_log.write(msg + '\n')
         else:
-            if isdir:
-                return self.create_shortcut_to_dir(target, self._menu_folder, target_name, virtual)
-            else:
-                return self.create_shortcut(target, self._menu_folder, target_name, virtual) 
+            return self.create_shortcut(target, self.menu_folder, shortcut_name, entry_point)
 
-    def create_shortcut(self, target, shortcut_directory, target_name=None, virtual=False):
+    def create_shortcut(self, target, shortcut_directory, shortcut_name=None, entry_point=False):
         """
         Creates a shortcut to a target.
 
@@ -114,144 +135,96 @@ class ShortCutter(object):
             `my_program`.
         :param str shortcut_directory:
             The directory path where the shortcut should be created.
-        :param str target_name:
+        :param str shortcut_name:
             Name of the shortcut without extension (.lnk would be appended if needed).
             If `None` uses the target filename. Defaults to `None`.
-        :param bool virtual:
-            Whether to create shortcut to yet non-existing file
-            Default is `False` - do not create
+        :param bool entry_point:
+            Whether to create shortcut to executable created via `entry_points` > `'console_scripts'` in `setup.py`
+            If `create_shortcut` is run inside `setup.py` executable was not moved to it's place yet.
 
-        Returns a tuple of (target_name, target_path, shortcut_file_path)
+        Returns a tuple of (shortcut_name, target_path, shortcut_file_path)
         """
-        if target_name is None:
-            # get the target name by getting the file name and removing the extension
-            target_name = os.path.splitext(os.path.basename(target))[0]
+        # Check entry_point input:
+        if entry_point and os.path.basename(target) != target:
+            raise ValueError('When entry_point=True target can be basename only.')
 
-        # find the target path:
-        target_path = self.find_target(target)
+        # Check if target is dir or file:
+        if entry_point:
+            isdir = False
+        elif (os.path.basename(target) == target) and (self.find_target(target) is not None):
+            isdir = False
+        else:
+            isdir = True if os.path.isdir(target) else False
 
-        # Create temporal file in order to create shortcut in virtual mode:
-        clean = False
-
-        def create_temp_target():
-            if not os.path.isdir(os.path.dirname(target)):
-                os.makedirs(os.path.dirname(target))
-            open(target, 'a').close()
-
-        if (target_path is None) and virtual:
-            if not self._silent:
-                create_temp_target()
-                clean = True
+        # Set shortcut name:
+        if shortcut_name is None:
+            if entry_point:
+                shortcut_name = target
+            elif isdir:
+                shortcut_name = os.path.basename(target)
             else:
-                try:
-                    create_temp_target()
-                    clean = True
-                except (OSError, IOError):
-                    self._err_file.write(''.join(traceback.format_exc()))
+                # getting the file name and removing the extension:
+                shortcut_name = os.path.splitext(os.path.basename(target))[0]
 
-        target_path = self.find_target(target)
+        # Set the target path:
+        if entry_point:
+            target_path = os.path.join(self.bin_folder,
+                                       target + ('.exe' if (os.name == 'nt') else ''))
+        elif isdir:
+            target_path = os.path.abspath(target)
+        else:
+            target_path = self.find_target(target)
 
-        # Create shortcut to the target_path:
-        if not self._silent:
-            shortcut_file_path = self._create_shortcut_file(target_name, target_path, shortcut_directory)
+        # Create shortcut:
+        def create():
+            if isdir:
+                return self._create_shortcut_to_dir(shortcut_name, target_path, shortcut_directory)
+            else:
+                return self._create_shortcut_file(shortcut_name, target_path, shortcut_directory)
+
+        if self.raise_errors:
+            shortcut_file_path = create()
         else:
             # noinspection PyBroadException
             try:
-                shortcut_file_path = self._create_shortcut_file(target_name, target_path, shortcut_directory)
+                shortcut_file_path = create()
             except:
                 shortcut_file_path = None
-                self._err_file.write(''.join(traceback.format_exc()))
+                self.error_log.write(''.join(traceback.format_exc()))
 
-        # Delete temporal file:
-        if clean:
-            os.remove(target)
-
-        return target_name, target_path, shortcut_file_path
-
-    def create_shortcut_to_dir(self, target_path, shortcut_directory, target_name=None, virtual=False):
-        """
-        Creates a shortcut to a direcrory.
-
-        :param str target_path:
-            The target directory path to create a shortcut for.
-        :param str shortcut_directory:
-            The directory path where the shortcut should be created.
-        :param str target_name:
-            Name of the shortcut without extension (.lnk would be appended if needed).
-            If `None` uses the target filename. Defaults to `None`.
-        :param bool virtual:
-            Whether to create shortcut to yet non-existing dir (creates dir)
-            Default is `False` - do not create
-
-        Returns a tuple of (target_name, target_path, shortcut_file_path)
-        """
-        if target_name is None:
-            # get the target_name by getting the target dir name
-            target_name = os.path.basename(target_path)
-
-        # Expand to abs path:
-        target_path = os.path.abspath(target_path)
-
-        # Create target_path if it doesn't exist in virtual mode:
-        if not os.path.isdir(target_path) and virtual:
-            if not self._silent:
-                os.makedirs(target_path)
-            else:
-                try:
-                    os.makedirs(target_path)
-                except OSError:
-                    self._err_file.write(''.join(traceback.format_exc()))
-
-        # Create shortcut to the target_path:
-        if not self._silent:
-            shortcut_file_path = self._create_shortcut_to_dir(target_name, target_path, shortcut_directory)
-        else:
-            # noinspection PyBroadException
-            try:
-                shortcut_file_path = self._create_shortcut_to_dir(target_name, target_path, shortcut_directory)
-            except:
-                shortcut_file_path = None
-                self._err_file.write(''.join(traceback.format_exc()))
-
-        return target_name, target_path, shortcut_file_path
+        return shortcut_name, target_path, shortcut_file_path
 
     # should be overridden
-    def _create_shortcut_to_dir(self, target_name, target_path, shortcut_directory):
+    def _create_shortcut_to_dir(self, shortcut_name, target_path, shortcut_directory):
         raise ShortcutError("_create_shortcut_to_dir needs overriding")
 
     # should be overridden
-    def _create_shortcut_file(self, target_name, target_path, shortcut_directory):
+    def _create_shortcut_file(self, shortcut_name, target_path, shortcut_directory):
         raise ShortcutError("_create_shortcut_file needs overriding")
 
-    @staticmethod
-    def _isdir_virtual(target, virtual_type):
+    def makedirs(self, *args):
         """
-        Sets
-            isdir = True/False (whether it's a shortcut to a directory),
-            virtual = True/False (whether to create shortcut to yet non-existing file/dir),
-        depending on inputs.
+        Recursively creates dirs if they don't exist.
+        Utilizes self.raise_errors and self.error_log
 
-        :param str target:
-            The target to create a shortcut for, it can be a fully qualified
-            file path `/path/to/my_program` or a simple application name 
-            `my_program`.
-        :param str virtual_type: `None` | `'file'` | `'dir'`
-            Whether to create shortcut to yet non-existing file/dir (creates dir)
+        :param args:
+            Multiple paths (str) for folders to create.
 
-        returns (isdir, virtual)
+        Returns True on success False of failure
         """
-        if virtual_type is None:
-            virtual = False
-            isdir = True if os.path.isdir(target) else False
-        elif virtual_type == 'file':
-            virtual = True
-            isdir = False
-        elif virtual_type == 'dir':
-            virtual = True
-            isdir = True
-        else:
-            raise ValueError("virtual_type kwarg can only be None, 'dir' or 'file'.")
-        return isdir, virtual
+        ret = True
+        for path in args:
+            if not os.path.isdir(path):
+                if self.raise_errors:
+                    os.makedirs(path)
+                else:
+                    try:
+                        os.makedirs(path)
+                    except OSError:
+                        if self.error_log is not None:
+                            self.error_log.write(''.join(traceback.format_exc()))
+                        ret = False
+        return ret
 
     def find_target(self, target):
         """
@@ -319,25 +292,3 @@ class ShortCutter(object):
         paths = os.environ['PATH'].split(os.pathsep)
 
         return paths
-
-    @property
-    def desktop_directory(self):
-        """
-        Sets or returns the directory used when creating desktop shortcuts. 
-        """
-        return self._desktop_folder
-
-    @desktop_directory.setter
-    def desktop_directory(self, value):
-        self._desktop_folder = value
-
-    @property
-    def menu_directory(self):
-        """
-        Sets or returns the directory used when creating menu shortcuts. 
-        """
-        return self._menu_folder
-
-    @menu_directory.setter
-    def menu_directory(self, value):
-        self._menu_folder = value
