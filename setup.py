@@ -1,3 +1,5 @@
+import io
+import os
 import sys
 from setuptools import setup
 
@@ -43,6 +45,12 @@ __classifiers__ = [
     "Environment :: Win32 (MS Windows)",
 ]
 
+# Get the long description from the README file
+here = os.path.abspath(os.path.dirname(__file__))
+with io.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
+    __long_description__ = f.read()
+
+
 if __name__ == '__main__':
     setup(name='shortcut',
           version = __version__,
@@ -51,6 +59,7 @@ if __name__ == '__main__':
           author = __author__,
           author_email = __author_email__,
           license= __license__,
+          long_description=__long_description__,
           packages = [__project__],
           #install_requires = __requires__,
           extras_require = __extra_requires__,
